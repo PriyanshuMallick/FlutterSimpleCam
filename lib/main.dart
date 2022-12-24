@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/Camera_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,9 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Camera App',
       debugShowCheckedModeBanner: false,
-      home: Container(
-        color: Colors.amber,
-      ),
+      home: CameraScreen(cameras: cameras),
     );
   }
 }
