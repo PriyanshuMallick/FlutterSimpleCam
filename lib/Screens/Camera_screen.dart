@@ -1,8 +1,8 @@
-// ignore_for_file: file_names
-
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+
+import 'gallery_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -51,30 +51,47 @@ class _CameraScreenState extends State<CameraScreen> {
         children: [
           camPreview(),
           const Spacer(),
-          Row(children: [
-            //Switch camera
-            IconButton(
-              onPressed: () => changeCamera(),
-              icon: const Icon(Icons.switch_camera_rounded, color: Colors.white),
-            ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(children: [
+              //Switch camera
+              IconButton(
+                onPressed: () => changeCamera(),
+                icon: const Icon(Icons.switch_camera_rounded, color: Colors.white),
+              ),
 
-            // Capture Button
-            GestureDetector(
-              onTap: () => capturedImage(),
-              child: Container(
+              const Spacer(),
+              // Capture Button
+              GestureDetector(
+                onTap: () => capturedImage(),
+                child: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    )),
+              ),
+
+              const Spacer(),
+              // Gallery Button
+              GestureDetector(
+                onTap: () => galleryButton(),
+                child: Container(
                   height: 60,
                   width: 60,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  )),
-            ),
-
-            // Gallery Button
-            GestureDetector(
-              onTap: () => galleryButton(),
-            )
-          ])
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      image: capturedImages.isNotEmpty
+                          ? DecorationImage(
+                              image: FileImage(capturedImages.last),
+                              fit: BoxFit.cover,
+                            )
+                          : null),
+                ),
+              )
+            ]),
+          )
         ],
       ),
     );
@@ -94,7 +111,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  capturedImage() async {
+  void capturedImage() async {
     await _initializeControllerFuture; //Make sure camera is initialized
     var xFile = await _controller.takePicture();
     setState(() {
@@ -102,7 +119,7 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
-  changeCamera() {
+  void changeCamera() {
     if (widget.cameras.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('No secondary camera found'),
@@ -115,5 +132,14 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
-  galleryButton() {}
+  galleryButton() {
+    if (capturedImages.isEmpty) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryScreen(images: capturedImages.reversed.toList()),
+      ),
+    );
+  }
 }

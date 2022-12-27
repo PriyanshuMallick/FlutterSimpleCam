@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'Screens/Camera_screen.dart';
+import 'Screens/camera_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
